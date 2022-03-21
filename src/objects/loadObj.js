@@ -32,6 +32,8 @@ function loadObj(options, cb, promise) {
 		case "glb":
 			// [jscastro] Support for GLTF/GLB
 			loader = gltfLoader;
+			if (options.draco) loader.setDRACOLoader(options.draco);
+			if (options.ktx2) loader.setKTX2Loader(options.ktx2);
 			break;
 		case "fbx":
 			loader = fbxLoader;
