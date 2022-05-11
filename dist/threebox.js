@@ -1410,6 +1410,8 @@ Threebox.prototype = {
 		}
 		let d2 = 1000; let r2 = 2; let mapSize2 = 8192;
 		this.lights.dirLight.castShadow = true;
+		// [shabi8] added shadow bias to remove zigzag line in shadow
+		this.lights.dirLight.shadow.bias = 0.0005;
 		this.lights.dirLight.shadow.radius = r2;
 		this.lights.dirLight.shadow.mapSize.width = mapSize2;
 		this.lights.dirLight.shadow.mapSize.height = mapSize2;
@@ -4226,6 +4228,8 @@ function loadObj(options, cb, promise) {
 		case "glb":
 			// [jscastro] Support for GLTF/GLB
 			loader = gltfLoader;
+			if (options.draco) loader.setDRACOLoader(options.draco);
+			if (options.ktx2) loader.setKTX2Loader(options.ktx2);
 			break;
 		case "fbx":
 			loader = fbxLoader;
@@ -17615,7 +17619,8 @@ Objects.prototype = {
 			obj.setReceiveShadowFloor = function () {
 				if (obj.castShadow) {
 					let sp = obj.shadowPlane, p = sp.position, r = sp.rotation;
-					p.z = -obj.modelHeight;
+					//[shabi8] added a float to shadow height to avoid z fighting
+					p.z = -obj.modelHeight + parseFloat((Math.random() * 0.1).toFixed(4));
 					r.y = obj.rotation.y;
 					r.x = -obj.rotation.x;
 					if (obj.userData.units === 'meters') {
@@ -17806,7 +17811,8 @@ Objects.prototype = {
 				//clone also the model inside it's the one who keeps the real size
 				if (obj.model) {
 					//let's clone the object before manipulate it
-					let dup = obj.clone(true);
+					// [shabi8] removed dup - not applied and gave serialise warning with ktx2
+					// let dup = obj.clone(true);
 					let model = obj.model.clone();
 					//get the size of the model because the object is translated and has boundingBoxShadow
 					bounds = new THREE.Box3().setFromObject(model);
@@ -17817,7 +17823,8 @@ Objects.prototype = {
 						let rmi = new THREE.Matrix4();
 						obj.matrix.extractRotation(rm);
 						rmi.copy(rm).invert();
-						dup.setRotationFromMatrix(rmi);
+						// [shabi8] removed dup - not applied and gave serialise warning with ktx2 
+						// dup.setRotationFromMatrix(rmi);
 						//now the object inside will give us a NAABB Non-Axes Aligned Bounding Box 
 						bounds = new THREE.Box3().setFromObject(model);
 					}

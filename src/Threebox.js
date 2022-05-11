@@ -1140,6 +1140,8 @@ Threebox.prototype = {
 		}
 		let d2 = 1000; let r2 = 2; let mapSize2 = 8192;
 		this.lights.dirLight.castShadow = true;
+		// [shabi8] added shadow bias to remove zigzag line in shadow
+		this.lights.dirLight.shadow.bias = 0.0005;
 		this.lights.dirLight.shadow.radius = r2;
 		this.lights.dirLight.shadow.mapSize.width = mapSize2;
 		this.lights.dirLight.shadow.mapSize.height = mapSize2;

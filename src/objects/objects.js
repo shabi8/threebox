@@ -497,7 +497,8 @@ Objects.prototype = {
 			obj.setReceiveShadowFloor = function () {
 				if (obj.castShadow) {
 					let sp = obj.shadowPlane, p = sp.position, r = sp.rotation;
-					p.z = -obj.modelHeight;
+					//[shabi8] added a float to shadow height to avoid z fighting
+					p.z = -obj.modelHeight + parseFloat((Math.random() * 0.1).toFixed(4));
 					r.y = obj.rotation.y;
 					r.x = -obj.rotation.x;
 					if (obj.userData.units === 'meters') {
